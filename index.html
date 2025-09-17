@@ -1,77 +1,70 @@
-                    });
-                }
-            };
-            document.body.appendChild(installBtn);
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Οικογενειακές Εργασίες</title>
+    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIk9pa29nZW5laWFrw6VzIEVyZ2Fzw61htJUiLAogICJzaG9ydF9uYW1lIjogIkVyZ2Fzw61htJUiLAogICJzdGFydF91cmwiOiAiLyIsCiAgImRpc3BsYXkiOiAic3RhbmRhbG9uZSIsCiAgImJhY2tncm91bmRfY29sb3IiOiAiIzJlN2Q4MiIsCiAgInRoZW1lX2NvbG9yIjogIiMyZTdkODIiLAogICJpY29ucyI6IFsKICAgIHsKICAgICAgInNyYyI6ICJkYXRhOmltYWdlL3N2Zyt4bWw7YmFzZTY0LEwzTjJaeUI0Yld4dWN6MGlhSFIwY0RvdkwzZDNkeTV6TXk1dmNtY3ZNakF3TUM5emRtY2lJSGRwWkhSb1BTSXpNaUlnYUdWcFoyaDBQU0l6TWlJK1BHeGphU0JtYVd4c1BTSXlNa1V5T0RFaVBqeHdZWFJvSUdRZ1RTSTVMall4TURNK01USTBXbTA0TGpSak1TNDRJekF1TlNBekxTNHdNVFVnTXk0ek5EMHhMalV6VERreUxqVXpJRFl1TnpoRE9USXVNVFVnTlM0ME1DQTVNUzQxTXlBMUxqUXdJRGt3TGpVNElEWXVNemhNTWpJdU16a2dORGd1TVROak1TNDRMUzR3TVRWZ016TTBJREF1TWpVaU1UTXVNVGtnTVRNdU1Ua2lQand2Y0dGMGFEND0iLAogICAgICAic2l6ZXMiOiAiMzJ4MzIiLAogICAgICAidHlwZSI6ICJpbWFnZS9zdmcreG1sIgogICAgfQogIF0KfQ==">
+    <meta name="theme-color" content="#2e7d82">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        // Tab Functions
-        function switchTab(tabName) {
-            currentTab = tabName;
-            
-            // Update tab buttons
-            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
-            document.querySelector(`[onclick="switchTab('${tabName}')"]`).classList.add('active');
-            
-            // Update tab content
-            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-            document.getElementById(`${tabName}-tab`).classList.add('active');
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
         }
 
-        // History Functions
-        function loadHistory() {
-            updateHistoryStats();
-            filterAndDisplayHistory();
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+            overflow: hidden;
         }
 
-        function updateHistoryStats() {
-            const completedTasks = tasks.filter(t => t.status === 'completed');
-            
-            // Total completed
-            document.getElementById('historyTotalCompleted').textContent = completedTasks.length;
-            
-            // This week
-            const weekStart = new Date();
-            weekStart.setDate(weekStart.getDate() - weekStart.getDay());
-            weekStart.setHours(0, 0, 0, 0);
-            
-            const thisWeekTasks = completedTasks.filter(t => 
-                new Date(t.completedAt) >= weekStart
-            );
-            document.getElementById('historyThisWeek').textContent = thisWeekTasks.length;
-            
-            // This month
-            const monthStart = new Date();
-            monthStart.setDate(1);
-            monthStart.setHours(0, 0, 0, 0);
-            
-            const thisMonthTasks = completedTasks.filter(t => 
-                new Date(t.completedAt) >= monthStart
-            );
-            document.getElementById('historyThisMonth').textContent = thisMonthTasks.length;
-            
-            // Average per day (last 30 days)
-            const thirtyDaysAgo = new Date();
-            thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-            
-            const last30DaysTasks = completedTasks.filter(t => 
-                new Date(t.completedAt) >= thirtyDaysAgo
-            );
-            
-            const avgPerDay = (last30DaysTasks.length / 30).toFixed(1);
-            document.getElementById('historyAvgPerDay').textContent = avgPerDay;
+        .header {
+            background: linear-gradient(135deg, #2e7d82 0%, #3d8b8f 100%);
+            padding: 30px;
+            color: white;
+            text-align: center;
         }
 
-        function filterAndDisplayHistory() {
-            const personFilter = document.getElementById('historyPersonFilter').value;
-            const periodFilter = document.getElementById('historyPeriodFilter').value;
-            const sortFilter = document.getElementById('historySortFilter').value;
-            
-            let completedTasks = tasks.filter(t => t.status === 'completed');
-            
-            // Filter by person
-            if (personFilter !== 'all') {
-                completedTasks = completedTasks.filter(t => 
-                    t.        .tabs {
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .user-selector {
+            margin: 20px 0;
+        }
+
+        .user-selector select {
+            padding: 12px 20px;
+            border-radius: 25px;
+            border: 2px solid rgba(255,255,255,0.3);
+            background: rgba(255,255,255,0.1);
+            color: white;
+            font-size: 16px;
+            outline: none;
+        }
+
+        .user-selector select option {
+            background: #2e7d82;
+            color: white;
+        }
+
+        .main-content {
+            padding: 30px;
+        }
+
+        .tabs {
             display: flex;
             background: #f8f9fa;
             border-radius: 15px;
@@ -104,6 +97,190 @@
 
         .tab-content.active {
             display: block;
+        }
+
+        .task-form {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2e7d82;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #2e7d82;
+        }
+
+        .form-group input[type="file"] {
+            border: 2px dashed #2e7d82;
+            background: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .photo-preview {
+            max-width: 200px;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+        }
+
+        .task-photo {
+            max-width: 100%;
+            border-radius: 10px;
+            margin-top: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #2e7d82 0%, #3d8b8f 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #2e7d82;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .tasks-section {
+            margin-top: 40px;
+        }
+
+        .tasks-section h3 {
+            color: #2e7d82;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+
+        .task-item {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            transition: transform 0.2s;
+        }
+
+        .task-item:hover {
+            transform: translateY(-2px);
+        }
+
+        .task-item.completed {
+            background: #d4edda;
+            border-color: #c3e6cb;
+            opacity: 0.8;
+        }
+
+        .task-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .task-title {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #2e7d82;
+        }
+
+        .task-status {
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .status-pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-completed {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .task-meta {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 10px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .task-description {
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .task-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-small {
+            padding: 8px 15px;
+            font-size: 14px;
+        }
+
+        .btn-success {
+            background: #28a745;
+        }
+
+        .btn-danger {
+            background: #dc3545;
         }
 
         .history-filters {
@@ -200,25 +377,6 @@
             border-radius: 12px;
             font-size: 12px;
             margin-left: 10px;
-        }        .form-group input[type="file"] {
-            border: 2px dashed #2e7d82;
-            background: #f8f9fa;
-            padding: 20px;
-            text-align: center;
-            cursor: pointer;
-        }
-
-        .photo-preview {
-            max-width: 200px;
-            border-radius: 10px;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
-        }
-
-        .task-photo {
-            max-width: 100%;
-            border-radius: 10px;
-            margin-top: 10px;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
         }
 
         .notification-panel {
@@ -243,233 +401,6 @@
             cursor: pointer;
             font-size: 18px;
             margin-left: 10px;
-        }<!DOCTYPE html>
-<html lang="el">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Οικογενειακές Εργασίες</title>
-    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIk9pa29nZW5laWFrw6VzIEVyZ2Fzw63htJUiLAogICJzaG9ydF9uYW1lIjogIkVyZ2Fzw61htJUiLAogICJzdGFydF91cmwiOiAiLyIsCiAgImRpc3BsYXkiOiAic3RhbmRhbG9uZSIsCiAgImJhY2tncm91bmRfY29sb3IiOiAiIzJlN2Q4MiIsCiAgInRoZW1lX2NvbG9yIjogIiMyZTdkODIiLAogICJpY29ucyI6IFsKICAgIHsKICAgICAgInNyYyI6ICJkYXRhOmltYWdlL3N2Zyt4bWw7YmFzZTY0LEwzTjJaeUI0Yld4dWN6MGlhSFIwY0RvdkwzZDNkeTV6TXk1dmNtY3ZNakF3TUM5emRtY2lJSGRwWkhSb1BTSXpNaUlnYUdWcFoyaDBQU0l6TWlJK1BHeGphU0JtYVd4c1BTSXlNa1V5T0RFaVBqeHdZWFJvSUdRZ1RTSTVMall4TURNL01USTBXbTA0TGpSak1TNDRJekF1TlNBekxTNHdNVFVnTXk0ek5DMHhMalV6VERreUxqVXpJRFl1TnpoRE9USXVNVFVnTlM0ME1DQTVNUzQxTXlBMUxqUXdJRGt3TGpVNElEWXVNemhNTWpJdU16a2dORGd1TVROak1TNDRMUzR3TVRWZ016TTBJREF1TWpVaU1UTXVNVGtnTVRNdU1Ua2lQand2Y0dGMGFEND0iLAogICAgICAic2l6ZXMiOiAiMzJ4MzIiLAogICAgICAidHlwZSI6ICJpbWFnZS9zdmcreG1sIgogICAgfQogIF0KfQ==">
-    <meta name="theme-color" content="#2e7d82">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
-            overflow: hidden;
-        }
-
-        .header {
-            background: linear-gradient(135deg, #2e7d82 0%, #3d8b8f 100%);
-            padding: 30px;
-            color: white;
-            text-align: center;
-        }
-
-        .header h1 {
-            font-size: 2.5em;
-            margin-bottom: 10px;
-        }
-
-        .user-selector {
-            margin: 20px 0;
-        }
-
-        .user-selector select {
-            padding: 12px 20px;
-            border-radius: 25px;
-            border: 2px solid rgba(255,255,255,0.3);
-            background: rgba(255,255,255,0.1);
-            color: white;
-            font-size: 16px;
-            outline: none;
-        }
-
-        .user-selector select option {
-            background: #2e7d82;
-            color: white;
-        }
-
-        .main-content {
-            padding: 30px;
-        }
-
-        .task-form {
-            background: #f8f9fa;
-            padding: 25px;
-            border-radius: 15px;
-            margin-bottom: 30px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #2e7d82;
-        }
-
-        .form-group input, .form-group select, .form-group textarea {
-            width: 100%;
-            padding: 12px 15px;
-            border: 2px solid #e9ecef;
-            border-radius: 10px;
-            font-size: 16px;
-            transition: border-color 0.3s;
-        }
-
-        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
-            outline: none;
-            border-color: #2e7d82;
-        }
-
-        .btn {
-            background: linear-gradient(135deg, #2e7d82 0%, #3d8b8f 100%);
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            border-radius: 25px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: transform 0.2s;
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-        }
-
-        .tasks-section {
-            margin-top: 40px;
-        }
-
-        .tasks-section h3 {
-            color: #2e7d82;
-            margin-bottom: 20px;
-            font-size: 1.5em;
-        }
-
-        .task-item {
-            background: white;
-            border: 2px solid #e9ecef;
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-            transition: transform 0.2s;
-        }
-
-        .task-item:hover {
-            transform: translateY(-2px);
-        }
-
-        .task-item.completed {
-            background: #d4edda;
-            border-color: #c3e6cb;
-            opacity: 0.8;
-        }
-
-        .task-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-
-        .task-title {
-            font-size: 1.2em;
-            font-weight: 600;
-            color: #2e7d82;
-        }
-
-        .task-status {
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: bold;
-        }
-
-        .status-pending {
-            background: #fff3cd;
-            color: #856404;
-        }
-
-        .status-completed {
-            background: #d1ecf1;
-            color: #0c5460;
-        }
-
-        .task-meta {
-            display: flex;
-            gap: 20px;
-            margin-bottom: 10px;
-            font-size: 14px;
-            color: #666;
-        }
-
-        .task-description {
-            margin-bottom: 15px;
-            line-height: 1.6;
-        }
-
-        .task-actions {
-            display: flex;
-            gap: 10px;
-        }
-
-        .btn-small {
-            padding: 8px 15px;
-            font-size: 14px;
-        }
-
-        .btn-success {
-            background: #28a745;
-        }
-
-        .btn-danger {
-            background: #dc3545;
-        }
-
-        .stats {
-            display: flex;
-            justify-content: space-around;
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 15px;
-            margin-bottom: 30px;
-        }
-
-        .stat-item {
-            text-align: center;
-        }
-
-        .stat-number {
-            font-size: 2em;
-            font-weight: bold;
-            color: #2e7d82;
-        }
-
-        .stat-label {
-            color: #666;
-            font-size: 14px;
         }
 
         @media (max-width: 768px) {
@@ -498,6 +429,11 @@
             .task-actions {
                 flex-direction: column;
             }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
         }
     </style>
 </head>
@@ -762,8 +698,6 @@
             const priority = document.getElementById('taskPriority').value;
             const photoFile = document.getElementById('taskPhoto').files[0];
 
-            let photoData = null;
-            
             const processTask = (photo) => {
                 const task = {
                     id: Date.now(),
@@ -912,19 +846,6 @@
                 ${message}
             `;
 
-            // Add animation styles if not exists
-            if (!document.getElementById('notificationStyles')) {
-                const style = document.createElement('style');
-                style.id = 'notificationStyles';
-                style.textContent = `
-                    @keyframes slideIn {
-                        from { transform: translateX(100%); opacity: 0; }
-                        to { transform: translateX(0); opacity: 1; }
-                    }
-                `;
-                document.head.appendChild(style);
-            }
-
             document.body.appendChild(notification);
 
             // Remove after 5 seconds
@@ -1008,6 +929,161 @@
                 }
             };
             document.body.appendChild(installBtn);
+        }
+
+        // Tab Functions
+        function switchTab(tabName) {
+            currentTab = tabName;
+            
+            // Update tab buttons
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelector(`[onclick="switchTab('${tabName}')"]`).classList.add('active');
+            
+            // Update tab content
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            document.getElementById(`${tabName}-tab`).classList.add('active');
+        }
+
+        // History Functions
+        function loadHistory() {
+            updateHistoryStats();
+            filterAndDisplayHistory();
+        }
+
+        function updateHistoryStats() {
+            const completedTasks = tasks.filter(t => t.status === 'completed');
+            
+            // Total completed
+            document.getElementById('historyTotalCompleted').textContent = completedTasks.length;
+            
+            // This week
+            const weekStart = new Date();
+            weekStart.setDate(weekStart.getDate() - weekStart.getDay());
+            weekStart.setHours(0, 0, 0, 0);
+            
+            const thisWeekTasks = completedTasks.filter(t => 
+                new Date(t.completedAt) >= weekStart
+            );
+            document.getElementById('historyThisWeek').textContent = thisWeekTasks.length;
+            
+            // This month
+            const monthStart = new Date();
+            monthStart.setDate(1);
+            monthStart.setHours(0, 0, 0, 0);
+            
+            const thisMonthTasks = completedTasks.filter(t => 
+                new Date(t.completedAt) >= monthStart
+            );
+            document.getElementById('historyThisMonth').textContent = thisMonthTasks.length;
+            
+            // Average per day (last 30 days)
+            const thirtyDaysAgo = new Date();
+            thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+            
+            const last30DaysTasks = completedTasks.filter(t => 
+                new Date(t.completedAt) >= thirtyDaysAgo
+            );
+            
+            const avgPerDay = (last30DaysTasks.length / 30).toFixed(1);
+            document.getElementById('historyAvgPerDay').textContent = avgPerDay;
+        }
+
+        function filterAndDisplayHistory() {
+            const personFilter = document.getElementById('historyPersonFilter').value;
+            const periodFilter = document.getElementById('historyPeriodFilter').value;
+            const sortFilter = document.getElementById('historySortFilter').value;
+            
+            let completedTasks = tasks.filter(t => t.status === 'completed');
+            
+            // Filter by person
+            if (personFilter !== 'all') {
+                completedTasks = completedTasks.filter(t => 
+                    t.assignedTo === personFilter || t.assignedBy === personFilter
+                );
+            }
+            
+            // Filter by period
+            if (periodFilter !== 'all') {
+                const now = new Date();
+                let startDate;
+                
+                switch (periodFilter) {
+                    case 'today':
+                        startDate = new Date();
+                        startDate.setHours(0, 0, 0, 0);
+                        break;
+                    case 'week':
+                        startDate = new Date();
+                        startDate.setDate(startDate.getDate() - startDate.getDay());
+                        startDate.setHours(0, 0, 0, 0);
+                        break;
+                    case 'month':
+                        startDate = new Date();
+                        startDate.setDate(1);
+                        startDate.setHours(0, 0, 0, 0);
+                        break;
+                }
+                
+                completedTasks = completedTasks.filter(t => 
+                    new Date(t.completedAt) >= startDate
+                );
+            }
+            
+            // Sort tasks
+            switch (sortFilter) {
+                case 'newest':
+                    completedTasks.sort((a, b) => new Date(b.completedAt) - new Date(a.completedAt));
+                    break;
+                case 'oldest':
+                    completedTasks.sort((a, b) => new Date(a.completedAt) - new Date(b.completedAt));
+                    break;
+                case 'priority':
+                    const priorityOrder = { high: 3, medium: 2, low: 1 };
+                    completedTasks.sort((a, b) => priorityOrder[b.priority] - priorityOrder[a.priority]);
+                    break;
+            }
+            
+            displayHistoryTasks(completedTasks);
+        }
+
+        function displayHistoryTasks(historyTasks) {
+            const historyList = document.getElementById('historyList');
+            
+            if (historyTasks.length === 0) {
+                historyList.innerHTML = '<div style="text-align: center; color: #666; padding: 40px;">Δεν βρέθηκαν ολοκληρωμένες εργασίες για τα επιλεγμένα φίλτρα.</div>';
+                return;
+            }
+            
+            historyList.innerHTML = historyTasks.map(task => {
+                const completedDate = new Date(task.completedAt);
+                const createdDate = new Date(task.createdAt);
+                const completionTime = Math.round((completedDate - createdDate) / (1000 * 60 * 60 * 24));
+                const completionTimeText = completionTime === 0 ? 'Ίδια μέρα' : `${completionTime} μέρες`;
+                
+                return `
+                    <div class="history-item">
+                        <div class="task-header">
+                            <div class="task-title">${task.title}</div>
+                            <div class="completion-time">⏰ ${completionTimeText}</div>
+                        </div>
+                        
+                        <div class="task-meta">
+                            <div>🎯 <strong>Από:</strong> ${userNames[task.assignedBy]}</div>
+                            <div>👤 <strong>Σε:</strong> ${userNames[task.assignedTo]}</div>
+                            <div>⭐ <strong>Προτεραιότητα:</strong> 
+                                <span style="color: ${priorityColors[task.priority]}">
+                                    ${task.priority === 'high' ? 'Υψηλή' : task.priority === 'medium' ? 'Μέτρια' : 'Χαμηλή'}
+                                </span>
+                            </div>
+                            <div>📅 <strong>Ολοκληρώθηκε:</strong> ${completedDate.toLocaleDateString('el-GR')} στις ${completedDate.toLocaleTimeString('el-GR', { hour: '2-digit', minute: '2-digit' })}</div>
+                        </div>
+                        
+                        ${task.description ? `<div class="task-description">${task.description}</div>` : ''}
+                        
+                        ${task.photo ? `<img src="${task.photo}" class="task-photo" alt="Φωτογραφία εργασίας">` : ''}
+                    </div>
+                `;
+            }).join('');
         }
     </script>
 </body>
