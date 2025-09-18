@@ -1,4 +1,148 @@
-<!DOCTYPE html>
+// Task Form Toggle
+        function toggleTaskForm() {
+            const container = document.getElementById('taskFormContainer');
+            const btn = document.getElementById('newTaskBtn');
+            
+            if (!taskFormVisible) {
+                container.style.display = 'block';
+                taskFormVisible = true;
+                btn.textContent = '➖ Απόκρυψη Φόρμας';
+                container.scrollIntoView({ behavior: 'smooth' });
+            } else {
+                container.style.display = 'none';
+                taskFormVisible = false;
+                btn.textContent = '➕ Δημιουργία Εργασίας';
+            }
+        }
+
+        // Notifications Setup
+        function setupNotifications() {
+            if ('Notification' in window && 'serviceWorker' in navigator) {
+                // Check if already granted
+                if (Notification.permission === 'granted') {
+                    notificationsEnabled = true;
+                } else if (Notification.permission !== 'denied') {
+                    // Show enable button
+                    document.getElementById('enableNotificationsBtn').style.display = 'inline-block';
+                }
+                
+                // Register service worker for notifications
+                registerServiceWorker();
+            }
+        }
+
+        // Service Worker Registration
+        function registerServiceWorker() {
+            if ('serviceWorker' in navigator) {
+                const swCode = `
+                    self.addEventListener('install', event => {
+                        console.log('Service Worker installed');
+                        self.skipWaiting();
+                    });
+
+                    self.addEventListener('activate', event => {
+                        console.log('Service Worker activated');
+                        event.waitUntil(self.clients.claim());
+                    });
+
+                    self.addEventListener('push', event => {
+                        if (!event.data) return;
+                        
+                        const data = event.data.json();
+                        const options = {
+                            body: data.body,
+                            icon: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiI+PGNpcmNsZSBmaWxsPSIjMmU3ZDgyIiBjeD0iMTYiIGN5PSIxNiIgcj0iMTYiLz48L3N2Zz4=',
+                            badge: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiI+PGNpcmNsZSBmaWxsPSIjMmU3ZDgyIiBjeD0iMTYiIGN5PSIxNiIgcj0iMTYiLz48L3N2Zz4=',
+                            vibrate: [200, 100, 200],
+                            tag: 'family-task',
+                            requireInteraction: true
+                        };
+                        
+                        event.waitUntil(
+                            self.registration.showNotification(data.title, options)
+                        );
+                    });
+
+                    self.addEventListener('notificationclick', event => {
+                        event.notification.close();
+                        event.waitUntil(
+                            self.clients.openWindow('/')
+                        );
+                    });
+                `;
+                
+                const blob = new Blob([swCode], { type: 'application/javascript' });
+                const swUrl = URL.createObjectURL(blob);
+                
+                navigator.serviceWorker.register(swUrl)
+                    .then(registration => {
+                        console.log('SW registered');
+                        window.swRegistration = registration;
+                    })
+                    .catch(error => console.log('SW registration failed', error));
+            }
+        }
+
+        async function enableNotifications() {
+            try {
+                const permission = await Notification.requestPermission();
+                if (permission === 'granted') {
+                    notificationsEnabled = true;
+                    document.getElementById('enableNotificationsBtn').style.display = 'none';
+                    showNotification('🔔 Οι ειδοποιήσεις ενεργοποιήθηκαν!');
+                } else {
+                    showNotification('❌ Οι ειδοποιήσεις απορρίφθηκαν');
+                }
+            } catch (error) {
+                console.error('Error enabling notifications:', error);
+                showNotification('❌ Σφάλμα ενεργοποίησης ειδοποιήσεων');
+            }
+        }
+
+        // Send notification to specific user
+        function sendTaskNotification(targetUser, title, message) {
+            // Store notification in Firestore for real-time delivery
+            db.collection('notifications').add({
+                targetUser: targetUser,
+                fromUser: currentUser,
+                title: title,
+                message: message,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                read: false
+            });
+        }
+
+        // Listen for notifications
+        function listenForNotifications() {
+            if (!currentUser) return;
+            
+            db.collection('notifications')
+                .where('targetUser', '==', currentUser)
+                .where('read', '==', false)
+                .onSnapshot(snapshot => {
+                    snapshot.docChanges().forEach(change => {
+                        if (change.type === 'added') {
+                            const notification = change.doc.data();
+                            
+                            // Show browser notification if enabled
+                            if (notificationsEnabled && Notification.permission === 'granted') {
+                                new Notification(notification.title, {
+                                    body: notification.message,
+                                    icon: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiI+PGNpcmNsZSBmaWxsPSIjMmU3ZDgyIiBjeD0iMTYiIGN5PSIxNiIgcj0iMTYiLz48L3N2Zz4=',
+                                    vibrate: [200, 100, 200],
+                                    tag: 'family-task'
+                                });
+                            }
+                            
+                            // Show in-app notification
+                            showNotification(`${notification.title}\n${notification.message}`);
+                            
+                            // Mark as read
+                            db.collection('notifications').doc(change.doc.id).update({ read: true });
+                        }
+                    });
+                });
+        }<!DOCTYPE html>
 <html lang="el">
 <head>
     <meta charset="UTF-8">
@@ -575,8 +719,18 @@
                 </div>
 
                 <div id="current-tab" class="tab-content active">
-                    <div class="task-form">
-                        <h3>📝 Νέα Εργασία</h3>
+                    <!-- Quick Actions -->
+                    <div style="margin-bottom: 30px; text-align: center;">
+                        <button id="newTaskBtn" class="btn" onclick="toggleTaskForm()">➕ Δημιουργία Εργασίας</button>
+                        <button id="enableNotificationsBtn" class="btn btn-warning" onclick="enableNotifications()" style="margin-left: 10px; display: none;">🔔 Ενεργοποίηση Ειδοποιήσεων</button>
+                    </div>
+
+                    <!-- Task Form (Initially Hidden) -->
+                    <div id="taskFormContainer" class="task-form" style="display: none;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                            <h3>📝 Νέα Εργασία</h3>
+                            <button class="btn btn-secondary btn-small" onclick="toggleTaskForm()">✖ Κλείσιμο</button>
+                        </div>
                         <form id="taskForm">
                             <div class="form-group">
                                 <label>Τίτλος εργασίας</label>
@@ -613,7 +767,7 @@
                     </div>
 
                     <div class="tasks-section">
-                        <h3>📋 Εκκρεμείς Εργασίες</h3>
+                        <h3>📋 Οι Εργασίες μου</h3>
                         <div id="tasksList">
                             <div class="loading">
                                 <div class="spinner"></div>
@@ -682,6 +836,8 @@
         let isAdmin = false;
         let tasks = [];
         let users = {};
+        let notificationsEnabled = false;
+        let taskFormVisible = false;
 
         // User names mapping
         const userNames = {
@@ -706,10 +862,45 @@
 
         // Initialize app
         document.addEventListener('DOMContentLoaded', function() {
+            checkStoredLogin();
             initializeUsers();
             setupEventListeners();
         });
 
+        // Check for stored login
+        function checkStoredLogin() {
+            const storedUser = localStorage.getItem('familyTasksUser');
+            const storedLoginTime = localStorage.getItem('familyTasksLoginTime');
+            
+            if (storedUser && storedLoginTime) {
+                const loginTime = new Date(storedLoginTime);
+                const now = new Date();
+                const daysSinceLogin = (now - loginTime) / (1000 * 60 * 60 * 24);
+                
+                // Auto-login if less than 30 days
+                if (daysSinceLogin < 30) {
+                    currentUser = storedUser;
+                    currentUserId = storedUser;
+                    
+                    // Check if admin
+                    db.collection('users').doc(storedUser).get().then(doc => {
+                        if (doc.exists) {
+                            isAdmin = doc.data().isAdmin || false;
+                            showApp();
+                            loadTasks();
+                            setupNotifications();
+                            if (isAdmin) {
+                                showAdminFeatures();
+                            }
+                        }
+                    });
+                    return;
+                }
+            }
+            
+            // Show login screen
+            document.getElementById('loginScreen').style.display = 'block';
+        }
         // Initialize default users in Firestore
         async function initializeUsers() {
             try {
@@ -807,8 +998,13 @@
                         // Sign in anonymously to Firebase Auth
                         await auth.signInAnonymously();
                         
+                        // Store login for auto-login
+                        localStorage.setItem('familyTasksUser', currentUserId);
+                        localStorage.setItem('familyTasksLoginTime', new Date().toISOString());
+                        
                         showApp();
                         loadTasks();
+                        setupNotifications();
                         
                         if (isAdmin) {
                             showAdminFeatures();
@@ -834,6 +1030,9 @@
                 document.getElementById('adminBadge').style.display = 'inline-block';
                 document.getElementById('adminTab').style.display = 'block';
             }
+            
+            // Start listening for notifications
+            listenForNotifications();
         }
 
         function showAdminFeatures() {
@@ -844,6 +1043,10 @@
             currentUser = null;
             currentUserId = null;
             isAdmin = false;
+            
+            // Clear stored login
+            localStorage.removeItem('familyTasksUser');
+            localStorage.removeItem('familyTasksLoginTime');
             
             auth.signOut();
             
@@ -878,11 +1081,19 @@
                 try {
                     await db.collection('tasks').add(task);
                     
-                    // Reset form
+                    // Reset form and hide it
                     document.getElementById('taskForm').reset();
                     document.getElementById('photoPreview').innerHTML = '';
+                    document.getElementById('taskFormContainer').style.display = 'none';
+                    taskFormVisible = false;
+                    document.getElementById('newTaskBtn').textContent = '➕ Δημιουργία Εργασίας';
                     
                     showNotification(`Η εργασία "${title}" ανατέθηκε στον/στη ${userNames[assignedTo]}!`);
+                    
+                    // Send notification to assigned user
+                    if (assignedTo !== currentUser) {
+                        sendTaskNotification(assignedTo, `Νέα εργασία: "${title}"`, `Από: ${userNames[currentUser]}`);
+                    }
                 } catch (error) {
                     console.error('Error adding task:', error);
                     showNotification('❌ Σφάλμα προσθήκης εργασίας');
@@ -908,6 +1119,12 @@
                 });
                 
                 showNotification('🎉 Εργασία ολοκληρώθηκε!');
+                
+                // Send notification to task creator
+                const task = tasks.find(t => t.id === taskId);
+                if (task && task.assignedBy !== currentUser) {
+                    sendTaskNotification(task.assignedBy, 'Εργασία ολοκληρώθηκε!', `${userNames[currentUser]} ολοκλήρωσε: "${task.title}"`);
+                }
             } catch (error) {
                 console.error('Error completing task:', error);
                 showNotification('❌ Σφάλμα ολοκλήρωσης εργασίας');
@@ -951,7 +1168,11 @@
             );
 
             if (userTasks.length === 0) {
-                tasksList.innerHTML = '<div style="text-align: center; color: #666; padding: 40px;">Δεν υπάρχουν εκκρεμείς εργασίες! 🎉</div>';
+                tasksList.innerHTML = `
+                    <div style="text-align: center; color: #666; padding: 40px;">
+                        <h4>🎉 Δεν έχεις εκκρεμείς εργασίες!</h4>
+                        <p>Όλες οι εργασίες σου έχουν ολοκληρωθεί.</p>
+                    </div>`;
                 return;
             }
 
