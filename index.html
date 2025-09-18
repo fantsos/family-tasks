@@ -4,8 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Οικογενειακές Εργασίες</title>
-    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIk9pa29nZW5laWFrw6VzIEVyZ2Fzw61htJUiLAogICJzaG9ydF9uYW1lIjogIkVyZ2Fzw61htJUiLAogICJzdGFydF91cmwiOiAiLyIsCiAgImRpc3BsYXkiOiAic3RhbmRhbG9uZSIsCiAgImJhY2tncm91bmRfY29sb3IiOiAiIzJlN2Q4MiIsCiAgInRoZW1lX2NvbG9yIjogIiMyZTdkODIiLAogICJpY29ucyI6IFsKICAgIHsKICAgICAgInNyYyI6ICJkYXRhOmltYWdlL3N2Zyt4bWw7YmFzZTY0LEwzTjJaeUI0Yld4dWN6MGlhSFIwY0RvdkwzZDNkeTV6TXk1dmNtY3ZNakF3TUM5emRtY2lJSGRwWkhSb1BTSXpNaUlnYUdWcFoyaDBQU0l6TWlJK1BHeGphU0JtYVd4c1BTSXlNa1V5T0RFaVBqeHdZWFJvSUdRZ1RTSTVMall4TURNK01USTBXbTA0TGpSak1TNDRJekF1TlNBekxTNHdNVFVnTXk0ek5EMHhMalV6VERreUxqVXpJRFl1TnpoRE9USXVNVFVnTlM0ME1DQTVNUzQxTXlBMUxqUXdJRGt3TGpVNElEWXVNemhNTWpJdU16a2dORGd1TVROak1TNDRMUzR3TVRWZ016TTBJREF1TWpVaU1UTXVNVGtnTVRNdU1Ua2lQand2Y0dGMGFEND0iLAogICAgICAic2l6ZXMiOiAiMzJ4MzIiLAogICAgICAidHlwZSI6ICJpbWFnZS9zdmcreG1sIgogICAgfQogIF0KfQ==">
+    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIk9pa29nZW5laWFrw6VzIEVyZ2Fzw61htJUiLAogICJzaG9ydF9uYW1lIjogIkVyZ2Fzw61htJUiLAogICJzdGFydF91cmwiOiAiLyIsCiAgImRpc3BsYXkiOiAic3RhbmRhbG9uZSIsCiAgImJhY2tncm91bmRfY29sb3IiOiAiIzJlN2Q4MiIsCiAgInRoZW1lX2NvbG9yIjogIiMyZTdkODIiLAogICJpY29ucyI6IFsKICAgIHsKICAgICAgInNyYyI6ICJkYXRhOmltYWdlL3N2Zyt4bWw7YmFzZTY0LEwzTjJaeUI0Yld4dWN6MGlhSFIwY0RvdkwzZDNkeTV6TXk1dmNtY3ZNakF3TUM5emRtY2lJSGRwWkhSb1BTSXpNaUlnYUdWcFoyaDBQU0l6TWlJK1BHeGphU0JtYVd4c1BTSXlNa1V5T0RFaVBqeHdZWFJvSUdRZ1RTSTVMall4UZNME1USTRXbTA0TGpSak1TNDRJekF1TlNBekxTNHdNVFVnTXk0ek5EMHhMalV6VERreUxqVXpJRFl1TnpoRE9USXVNVFVnTlM0ME1DQTVNUzQxTXlBMUxqUXdJRGt3TGpVNElEWXVNemhNTWpJdU16a2dORGd1TVROak1TNDRMUzR3TFRWZ016TTBJREF1TWpVaU1UTXVNVGtnTVRNdU1Ua2lQand2Y0dGMGFEND0iLAogICAgICAic2l6ZXMiOiAiMzJ4MzIiLAogICAgICAidHlwZSI6ICJpbWFnZS9zdmcreG1sIgogICAgfQogIF0KfQ==">
     <meta name="theme-color" content="#2e7d82">
+    
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    
     <style>
         * {
             margin: 0;
@@ -29,11 +35,77 @@
             overflow: hidden;
         }
 
+        /* LOGIN STYLES */
+        .login-container {
+            padding: 50px;
+            text-align: center;
+            min-height: 500px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .login-title {
+            font-size: 2.5em;
+            color: #2e7d82;
+            margin-bottom: 30px;
+        }
+
+        .login-form {
+            max-width: 300px;
+            margin: 0 auto;
+        }
+
+        .pin-input {
+            width: 100%;
+            padding: 20px;
+            font-size: 24px;
+            text-align: center;
+            border: 3px solid #2e7d82;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            letter-spacing: 10px;
+            outline: none;
+        }
+
+        .pin-input:focus {
+            box-shadow: 0 0 0 3px rgba(46, 125, 130, 0.3);
+        }
+
+        .user-buttons {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .user-btn {
+            padding: 15px 25px;
+            border: none;
+            border-radius: 15px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: linear-gradient(135deg, #2e7d82 0%, #3d8b8f 100%);
+            color: white;
+        }
+
+        .user-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(46, 125, 130, 0.4);
+        }
+
+        .user-btn.selected {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        }
+
+        /* MAIN APP STYLES */
         .header {
             background: linear-gradient(135deg, #2e7d82 0%, #3d8b8f 100%);
             padding: 30px;
             color: white;
             text-align: center;
+            position: relative;
         }
 
         .header h1 {
@@ -41,23 +113,46 @@
             margin-bottom: 10px;
         }
 
-        .user-selector {
-            margin: 20px 0;
+        .user-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
         }
 
-        .user-selector select {
-            padding: 12px 20px;
-            border-radius: 25px;
+        .current-user {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .header-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-header {
+            padding: 8px 15px;
+            background: rgba(255,255,255,0.2);
             border: 2px solid rgba(255,255,255,0.3);
-            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
             color: white;
-            font-size: 16px;
-            outline: none;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
         }
 
-        .user-selector select option {
-            background: #2e7d82;
-            color: white;
+        .btn-header:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        .admin-badge {
+            background: #ffd700;
+            color: #333;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-left: 10px;
         }
 
         .main-content {
@@ -82,6 +177,7 @@
             transition: all 0.3s;
             font-weight: 600;
             color: #666;
+            font-size: 14px;
         }
 
         .tab.active {
@@ -99,12 +195,34 @@
             display: block;
         }
 
-        .task-form {
-            background: #f8f9fa;
-            padding: 25px;
-            border-radius: 15px;
-            margin-bottom: 30px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        /* PIN MANAGEMENT MODAL */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 400px;
+            width: 90%;
+        }
+
+        .modal h3 {
+            color: #2e7d82;
+            margin-bottom: 20px;
+            text-align: center;
         }
 
         .form-group {
@@ -168,6 +286,28 @@
             transform: translateY(-2px);
         }
 
+        .btn-small {
+            padding: 8px 15px;
+            font-size: 14px;
+        }
+
+        .btn-success {
+            background: #28a745;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+        }
+
+        .btn-warning {
+            background: #ffc107;
+            color: #333;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+        }
+
         .stats {
             display: flex;
             justify-content: space-around;
@@ -192,6 +332,14 @@
             font-size: 14px;
         }
 
+        .task-form {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
         .tasks-section {
             margin-top: 40px;
         }
@@ -214,12 +362,6 @@
 
         .task-item:hover {
             transform: translateY(-2px);
-        }
-
-        .task-item.completed {
-            background: #d4edda;
-            border-color: #c3e6cb;
-            opacity: 0.8;
         }
 
         .task-header {
@@ -270,113 +412,26 @@
             gap: 10px;
         }
 
-        .btn-small {
-            padding: 8px 15px;
-            font-size: 14px;
-        }
-
-        .btn-success {
-            background: #28a745;
-        }
-
-        .btn-danger {
-            background: #dc3545;
-        }
-
-        .history-filters {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 15px;
-            margin-bottom: 20px;
+        /* Loading Spinner */
+        .loading {
             display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-            align-items: center;
-        }
-
-        .filter-group {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-        }
-
-        .filter-group label {
-            font-size: 12px;
-            color: #666;
-            font-weight: 600;
-        }
-
-        .filter-group select, .filter-group input {
-            padding: 8px 12px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 14px;
-        }
-
-        .history-stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 15px;
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 15px;
-            margin-bottom: 20px;
-        }
-
-        .history-stat {
-            text-align: center;
-            padding: 15px;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-
-        .history-stat-number {
-            font-size: 1.8em;
-            font-weight: bold;
-            color: #2e7d82;
-        }
-
-        .history-stat-label {
-            color: #666;
-            font-size: 12px;
-            margin-top: 5px;
-        }
-
-        .history-item {
-            background: white;
-            border: 2px solid #c3e6cb;
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-            position: relative;
-        }
-
-        .history-item::before {
-            content: "✅";
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            background: #28a745;
-            color: white;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
             justify-content: center;
-            font-size: 14px;
+            align-items: center;
+            height: 200px;
         }
 
-        .completion-time {
-            display: inline-block;
-            background: #d1ecf1;
-            color: #0c5460;
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 12px;
-            margin-left: 10px;
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #2e7d82;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         .notification-panel {
@@ -403,6 +458,17 @@
             margin-left: 10px;
         }
 
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .error {
+            color: #dc3545;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
         @media (max-width: 768px) {
             .container {
                 margin: 10px;
@@ -417,8 +483,13 @@
                 font-size: 2em;
             }
             
-            .main-content {
+            .main-content, .login-container {
                 padding: 20px;
+            }
+            
+            .user-info {
+                flex-direction: column;
+                gap: 10px;
             }
             
             .task-meta {
@@ -429,210 +500,193 @@
             .task-actions {
                 flex-direction: column;
             }
-        }
 
-        @keyframes slideIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
+            .tabs {
+                flex-wrap: wrap;
+            }
+
+            .tab {
+                font-size: 12px;
+                padding: 10px 15px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <h1>🏠 Οικογενειακές Εργασίες</h1>
-            <div class="user-selector">
-                <select id="currentUser">
-                    <option value="dad">👨 Άρης</option>
-                    <option value="mom">👩 Κατερίνα</option>
-                    <option value="child">👧 Ελισάβετ</option>
-                </select>
-                <button id="enableNotifications" class="btn" style="margin-left: 10px; padding: 8px 15px; font-size: 14px;">🔔 Ενεργοποίηση Ειδοποιήσεων</button>
+        <!-- LOGIN SCREEN -->
+        <div id="loginScreen" class="login-container">
+            <div class="login-title">🏠 Οικογενειακές Εργασίες</div>
+            
+            <div class="user-buttons">
+                <button class="user-btn" onclick="selectUser('dad')">👨 Άρης</button>
+                <button class="user-btn" onclick="selectUser('mom')">👩 Κατερίνα</button>
+                <button class="user-btn" onclick="selectUser('child')">👧 Ελισάβετ</button>
+            </div>
+
+            <div class="login-form">
+                <input type="password" class="pin-input" id="pinInput" placeholder="PIN" maxlength="6" inputmode="numeric">
+                <div class="error" id="loginError"></div>
+                <button class="btn" onclick="login()" style="width: 100%; margin-top: 20px;">🔑 Είσοδος</button>
+            </div>
+
+            <div style="margin-top: 30px; font-size: 12px; color: #666;">
+                <p>🔥 Εφαρμογή συνδεδεμένη με Firebase!</p>
+                <p>Επιλέξτε χρήστη και εισάγετε PIN για είσοδο.</p>
             </div>
         </div>
 
-        <div class="main-content">
-            <div class="stats">
-                <div class="stat-item">
-                    <div class="stat-number" id="totalTasks">0</div>
-                    <div class="stat-label">Σύνολο</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number" id="pendingTasks">0</div>
-                    <div class="stat-label">Εκκρεμείς</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number" id="completedTasks">0</div>
-                    <div class="stat-label">Ολοκληρωμένες</div>
+        <!-- MAIN APP -->
+        <div id="appScreen" style="display: none;">
+            <div class="header">
+                <h1>🏠 Οικογενειακές Εργασίες</h1>
+                <div class="user-info">
+                    <div class="current-user">
+                        <span id="currentUserDisplay"></span>
+                        <span id="adminBadge" class="admin-badge" style="display: none;">ΔΙΑΧΕΙΡΙΣΤΗΣ</span>
+                    </div>
+                    <div class="header-buttons">
+                        <button class="btn-header" onclick="openPinModal()">🔑 PIN</button>
+                        <button class="btn-header" onclick="logout()">🚪 Έξοδος</button>
+                    </div>
                 </div>
             </div>
 
-            <div class="tabs">
-                <div class="tab active" onclick="switchTab('current')">📋 Τρέχουσες</div>
-                <div class="tab" onclick="switchTab('history')">📚 Ιστορικό</div>
-            </div>
-
-            <div id="current-tab" class="tab-content active">
-                <div class="task-form">
-                    <h3>📝 Νέα Εργασία</h3>
-                    <form id="taskForm">
-                        <div class="form-group">
-                            <label>Τίτλος εργασίας</label>
-                            <input type="text" id="taskTitle" required placeholder="π.χ. Καθάρισμα δωματίου">
-                        </div>
-                        <div class="form-group">
-                            <label>Περιγραφή</label>
-                            <textarea id="taskDescription" rows="3" placeholder="Περιγραφή της εργασίας..."></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label>Ανάθεση σε</label>
-                            <select id="assignedTo" required>
-                                <option value="">Επιλέξτε άτομο</option>
-                                <option value="dad">👨 Άρης</option>
-                                <option value="mom">👩 Κατερίνα</option>
-                                <option value="child">👧 Ελισάβετ</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Προτεραιότητα</label>
-                            <select id="taskPriority">
-                                <option value="low">Χαμηλή</option>
-                                <option value="medium" selected>Μέτρια</option>
-                                <option value="high">Υψηλή</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>📷 Φωτογραφία (προαιρετική)</label>
-                            <input type="file" id="taskPhoto" accept="image/*" capture="environment">
-                            <div id="photoPreview" style="margin-top: 10px;"></div>
-                        </div>
-                        <button type="submit" class="btn">✨ Δημιουργία Εργασίας</button>
-                    </form>
-                </div>
-
-                <div class="tasks-section">
-                    <h3>📋 Εκκρεμείς Εργασίες</h3>
-                    <div id="tasksList"></div>
-                </div>
-            </div>
-
-            <div id="history-tab" class="tab-content">
-                <div class="history-filters">
-                    <div class="filter-group">
-                        <label>Φίλτρο Ατόμου</label>
-                        <select id="historyPersonFilter">
-                            <option value="all">Όλα τα άτομα</option>
-                            <option value="dad">👨 Άρης</option>
-                            <option value="mom">👩 Κατερίνα</option>
-                            <option value="child">👧 Ελισάβετ</option>
-                        </select>
+            <div class="main-content">
+                <div class="stats">
+                    <div class="stat-item">
+                        <div class="stat-number" id="totalTasks">0</div>
+                        <div class="stat-label">Σύνολο</div>
                     </div>
-                    <div class="filter-group">
-                        <label>Περίοδος</label>
-                        <select id="historyPeriodFilter">
-                            <option value="all">Όλες οι περίοδοι</option>
-                            <option value="today">Σήμερα</option>
-                            <option value="week">Αυτή την εβδομάδα</option>
-                            <option value="month">Αυτόν τον μήνα</option>
-                        </select>
+                    <div class="stat-item">
+                        <div class="stat-number" id="pendingTasks">0</div>
+                        <div class="stat-label">Εκκρεμείς</div>
                     </div>
-                    <div class="filter-group">
-                        <label>Ταξινόμηση</label>
-                        <select id="historySortFilter">
-                            <option value="newest">Νεότερες πρώτα</option>
-                            <option value="oldest">Παλιότερες πρώτα</option>
-                            <option value="priority">Ανά προτεραιότητα</option>
-                        </select>
+                    <div class="stat-item">
+                        <div class="stat-number" id="completedTasks">0</div>
+                        <div class="stat-label">Ολοκληρωμένες</div>
                     </div>
                 </div>
 
-                <div class="history-stats">
-                    <div class="history-stat">
-                        <div class="history-stat-number" id="historyTotalCompleted">0</div>
-                        <div class="history-stat-label">Συνολικές</div>
+                <div class="tabs">
+                    <div class="tab active" onclick="switchTab('current')">📋 Τρέχουσες</div>
+                    <div class="tab" onclick="switchTab('history')">📚 Ιστορικό</div>
+                    <div class="tab" id="adminTab" onclick="switchTab('admin')" style="display: none;">⚙️ Διαχείριση</div>
+                </div>
+
+                <div id="current-tab" class="tab-content active">
+                    <div class="task-form">
+                        <h3>📝 Νέα Εργασία</h3>
+                        <form id="taskForm">
+                            <div class="form-group">
+                                <label>Τίτλος εργασίας</label>
+                                <input type="text" id="taskTitle" required placeholder="π.χ. Καθάρισμα δωματίου">
+                            </div>
+                            <div class="form-group">
+                                <label>Περιγραφή</label>
+                                <textarea id="taskDescription" rows="3" placeholder="Περιγραφή της εργασίας..."></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label>Ανάθεση σε</label>
+                                <select id="assignedTo" required>
+                                    <option value="">Επιλέξτε άτομο</option>
+                                    <option value="dad">👨 Άρης</option>
+                                    <option value="mom">👩 Κατερίνα</option>
+                                    <option value="child">👧 Ελισάβετ</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Προτεραιότητα</label>
+                                <select id="taskPriority">
+                                    <option value="low">Χαμηλή</option>
+                                    <option value="medium" selected>Μέτρια</option>
+                                    <option value="high">Υψηλή</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>📷 Φωτογραφία (προαιρετική)</label>
+                                <input type="file" id="taskPhoto" accept="image/*" capture="environment">
+                                <div id="photoPreview" style="margin-top: 10px;"></div>
+                            </div>
+                            <button type="submit" class="btn">✨ Δημιουργία Εργασίας</button>
+                        </form>
                     </div>
-                    <div class="history-stat">
-                        <div class="history-stat-number" id="historyThisWeek">0</div>
-                        <div class="history-stat-label">Αυτή την εβδομάδα</div>
-                    </div>
-                    <div class="history-stat">
-                        <div class="history-stat-number" id="historyThisMonth">0</div>
-                        <div class="history-stat-label">Αυτόν τον μήνα</div>
-                    </div>
-                    <div class="history-stat">
-                        <div class="history-stat-number" id="historyAvgPerDay">0</div>
-                        <div class="history-stat-label">Μέσος όρος/ημέρα</div>
+
+                    <div class="tasks-section">
+                        <h3>📋 Εκκρεμείς Εργασίες</h3>
+                        <div id="tasksList">
+                            <div class="loading">
+                                <div class="spinner"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <div class="tasks-section">
-                    <h3>📚 Ιστορικό Ολοκληρωμένων Εργασιών</h3>
-                    <div id="historyList"></div>
+                <div id="history-tab" class="tab-content">
+                    <div class="tasks-section">
+                        <h3>📚 Ιστορικό Ολοκληρωμένων Εργασιών</h3>
+                        <div id="historyList">
+                            <div class="loading">
+                                <div class="spinner"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="admin-tab" class="tab-content">
+                    <div class="task-form">
+                        <h3>⚙️ Διαχείριση Χρηστών</h3>
+                        <div id="userManagement">
+                            <div class="loading">
+                                <div class="spinner"></div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- PIN MANAGEMENT MODAL -->
+    <div id="pinModal" class="modal">
+        <div class="modal-content">
+            <h3>🔑 Διαχείριση PIN</h3>
+            <div id="pinManagementContent">
+                <!-- Admin or User PIN change form will be loaded here -->
+            </div>
+            <div style="text-align: center; margin-top: 20px;">
+                <button class="btn btn-secondary" onclick="closePinModal()">Ακύρωση</button>
+            </div>
+        </div>
+    </div>
+
     <script>
-        // Service Worker Registration with notification support
-        if ('serviceWorker' in navigator) {
-            const swCode = `
-                self.addEventListener('install', event => {
-                    console.log('Service Worker installed');
-                    self.skipWaiting();
-                });
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyC1FnOEYHlBaXQtxqHX9Qnwx4lpZc0cZY0",
+            authDomain: "family-tasks-app-44296.firebaseapp.com",
+            projectId: "family-tasks-app-44296",
+            storageBucket: "family-tasks-app-44296.firebasestorage.app",
+            messagingSenderId: "108479351489",
+            appId: "1:108479351489:web:0629b17053ec0eeb96e240"
+        };
 
-                self.addEventListener('activate', event => {
-                    console.log('Service Worker activated');
-                    event.waitUntil(self.clients.claim());
-                });
-
-                self.addEventListener('push', event => {
-                    if (!event.data) return;
-                    
-                    const data = event.data.json();
-                    const options = {
-                        body: data.body,
-                        icon: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiI+PGNpcmNsZSBmaWxsPSIjMmU3ZDgyIiBjeD0iMTYiIGN5PSIxNiIgcj0iMTYiLz48L3N2Zz4=',
-                        badge: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiI+PGNpcmNsZSBmaWxsPSIjMmU3ZDgyIiBjeD0iMTYiIGN5PSIxNiIgcj0iMTYiLz48L3N2Zz4=',
-                        vibrate: [200, 100, 200],
-                        tag: 'family-task'
-                    };
-                    
-                    event.waitUntil(
-                        self.registration.showNotification(data.title, options)
-                    );
-                });
-
-                self.addEventListener('notificationclick', event => {
-                    event.notification.close();
-                    event.waitUntil(
-                        self.clients.openWindow('/')
-                    );
-                });
-            `;
-            
-            const blob = new Blob([swCode], { type: 'application/javascript' });
-            const swUrl = URL.createObjectURL(blob);
-            
-            navigator.serviceWorker.register(swUrl)
-                .then(registration => {
-                    console.log('SW registered');
-                    window.swRegistration = registration;
-                })
-                .catch(error => console.log('SW registration failed'));
-        }
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const auth = firebase.auth();
 
         // App State
-        let tasks = JSON.parse(localStorage.getItem('familyTasks') || '[]');
-        let currentUser = 'dad';
-        let notificationsEnabled = false;
-        let currentTab = 'current';
+        let currentUser = null;
+        let currentUserId = null;
+        let isAdmin = false;
+        let tasks = [];
+        let users = {};
 
         // User names mapping
         const userNames = {
             'dad': '👨 Άρης',
-            'mom': '👩 Κατερίνα', 
+            'mom': '👩 Κατερίνα',
             'child': '👧 Ελισάβετ'
         };
 
@@ -643,16 +697,62 @@
             'high': '#dc3545'
         };
 
+        // Default PINs (will be stored in Firestore)
+        const defaultPins = {
+            'dad': '1234',
+            'mom': '5678',
+            'child': '9999'
+        };
+
         // Initialize app
         document.addEventListener('DOMContentLoaded', function() {
-            loadTasks();
-            updateStats();
-            loadHistory();
-            
-            document.getElementById('currentUser').addEventListener('change', function(e) {
-                currentUser = e.target.value;
-                loadTasks();
-                loadHistory();
+            initializeUsers();
+            setupEventListeners();
+        });
+
+        // Initialize default users in Firestore
+        async function initializeUsers() {
+            try {
+                const usersRef = db.collection('users');
+                
+                for (const [userId, pin] of Object.entries(defaultPins)) {
+                    const userDoc = await usersRef.doc(userId).get();
+                    if (!userDoc.exists) {
+                        await usersRef.doc(userId).set({
+                            pin: pin,
+                            name: userNames[userId],
+                            isAdmin: userId === 'dad',
+                            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                        });
+                    }
+                }
+                
+                loadUsers();
+            } catch (error) {
+                console.error('Error initializing users:', error);
+                showNotification('❌ Σφάλμα σύνδεσης με βάση δεδομένων');
+            }
+        }
+
+        // Load users from Firestore
+        async function loadUsers() {
+            try {
+                const snapshot = await db.collection('users').get();
+                users = {};
+                snapshot.forEach(doc => {
+                    users[doc.id] = doc.data();
+                });
+            } catch (error) {
+                console.error('Error loading users:', error);
+            }
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            document.getElementById('pinInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    login();
+                }
             });
 
             document.getElementById('taskForm').addEventListener('submit', function(e) {
@@ -660,7 +760,6 @@
                 addTask();
             });
 
-            // Photo preview
             document.getElementById('taskPhoto').addEventListener('change', function(e) {
                 const file = e.target.files[0];
                 const preview = document.getElementById('photoPreview');
@@ -675,62 +774,118 @@
                     preview.innerHTML = '';
                 }
             });
+        }
 
-            // Notifications
-            document.getElementById('enableNotifications').addEventListener('click', enableNotifications);
-            
-            // Check if notifications are already enabled
-            if (Notification.permission === 'granted') {
-                notificationsEnabled = true;
-                updateNotificationButton();
+        // Login functions
+        function selectUser(userId) {
+            document.querySelectorAll('.user-btn').forEach(btn => btn.classList.remove('selected'));
+            event.target.classList.add('selected');
+            currentUserId = userId;
+        }
+
+        async function login() {
+            if (!currentUserId) {
+                showError('loginError', 'Παρακαλώ επιλέξτε χρήστη');
+                return;
             }
 
-            // History filters
-            document.getElementById('historyPersonFilter').addEventListener('change', loadHistory);
-            document.getElementById('historyPeriodFilter').addEventListener('change', loadHistory);
-            document.getElementById('historySortFilter').addEventListener('change', loadHistory);
-        });
+            const pin = document.getElementById('pinInput').value;
+            if (!pin) {
+                showError('loginError', 'Παρακαλώ εισάγετε PIN');
+                return;
+            }
 
-        function addTask() {
+            try {
+                const userDoc = await db.collection('users').doc(currentUserId).get();
+                
+                if (userDoc.exists) {
+                    const userData = userDoc.data();
+                    if (userData.pin === pin) {
+                        currentUser = currentUserId;
+                        isAdmin = userData.isAdmin || false;
+                        
+                        // Sign in anonymously to Firebase Auth
+                        await auth.signInAnonymously();
+                        
+                        showApp();
+                        loadTasks();
+                        
+                        if (isAdmin) {
+                            showAdminFeatures();
+                        }
+                    } else {
+                        showError('loginError', 'Λάθος PIN');
+                    }
+                } else {
+                    showError('loginError', 'Χρήστης δεν υπάρχει');
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                showError('loginError', 'Σφάλμα σύνδεσης');
+            }
+        }
+
+        function showApp() {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('appScreen').style.display = 'block';
+            document.getElementById('currentUserDisplay').textContent = userNames[currentUser];
+            
+            if (isAdmin) {
+                document.getElementById('adminBadge').style.display = 'inline-block';
+                document.getElementById('adminTab').style.display = 'block';
+            }
+        }
+
+        function showAdminFeatures() {
+            loadUserManagement();
+        }
+
+        function logout() {
+            currentUser = null;
+            currentUserId = null;
+            isAdmin = false;
+            
+            auth.signOut();
+            
+            document.getElementById('loginScreen').style.display = 'block';
+            document.getElementById('appScreen').style.display = 'none';
+            document.getElementById('pinInput').value = '';
+            document.getElementById('loginError').textContent = '';
+            document.querySelectorAll('.user-btn').forEach(btn => btn.classList.remove('selected'));
+        }
+
+        // Task functions
+        async function addTask() {
             const title = document.getElementById('taskTitle').value;
             const description = document.getElementById('taskDescription').value;
             const assignedTo = document.getElementById('assignedTo').value;
             const priority = document.getElementById('taskPriority').value;
             const photoFile = document.getElementById('taskPhoto').files[0];
 
-            const processTask = (photo) => {
+            const processTask = async (photo) => {
                 const task = {
-                    id: Date.now(),
                     title,
                     description,
                     assignedTo,
                     assignedBy: currentUser,
                     priority,
                     status: 'pending',
-                    createdAt: new Date().toISOString(),
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
                     completedAt: null,
                     photo: photo
                 };
 
-                tasks.unshift(task);
-                saveTasks();
-                loadTasks();
-                updateStats();
-                loadHistory();
-
-                // Reset form
-                document.getElementById('taskForm').reset();
-                document.getElementById('photoPreview').innerHTML = '';
-
-                // Show success message
-                showNotification(`Η εργασία "${title}" ανατέθηκε στον/στη ${userNames[assignedTo]}!`);
-                
-                // Send push notification if enabled
-                if (notificationsEnabled && assignedTo !== currentUser) {
-                    sendPushNotification(
-                        `Νέα εργασία από ${userNames[currentUser]}`,
-                        `"${title}" - ${description || 'Χωρίς περιγραφή'}`
-                    );
+                try {
+                    await db.collection('tasks').add(task);
+                    
+                    // Reset form
+                    document.getElementById('taskForm').reset();
+                    document.getElementById('photoPreview').innerHTML = '';
+                    
+                    showNotification(`Η εργασία "${title}" ανατέθηκε στον/στη ${userNames[assignedTo]}!`);
+                } catch (error) {
+                    console.error('Error adding task:', error);
+                    showNotification('❌ Σφάλμα προσθήκης εργασίας');
                 }
             };
 
@@ -745,42 +900,51 @@
             }
         }
 
-        function completeTask(taskId) {
-            const task = tasks.find(t => t.id === taskId);
-            if (task) {
-                task.status = 'completed';
-                task.completedAt = new Date().toISOString();
-                saveTasks();
-                loadTasks();
-                updateStats();
-                loadHistory();
+        async function completeTask(taskId) {
+            try {
+                await db.collection('tasks').doc(taskId).update({
+                    status: 'completed',
+                    completedAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
                 
-                showNotification(`Μπράβο! Η εργασία "${task.title}" ολοκληρώθηκε!`);
-                
-                // Notify the person who assigned the task
-                if (notificationsEnabled && task.assignedBy !== currentUser) {
-                    sendPushNotification(
-                        `Εργασία ολοκληρώθηκε!`,
-                        `${userNames[currentUser]} ολοκλήρωσε: "${task.title}"`
-                    );
+                showNotification('🎉 Εργασία ολοκληρώθηκε!');
+            } catch (error) {
+                console.error('Error completing task:', error);
+                showNotification('❌ Σφάλμα ολοκλήρωσης εργασίας');
+            }
+        }
+
+        async function deleteTask(taskId) {
+            if (confirm('Είστε σίγουροι ότι θέλετε να διαγράψετε αυτή την εργασία;')) {
+                try {
+                    await db.collection('tasks').doc(taskId).delete();
+                    showNotification('🗑️ Εργασία διαγράφηκε');
+                } catch (error) {
+                    console.error('Error deleting task:', error);
+                    showNotification('❌ Σφάλμα διαγραφής εργασίας');
                 }
             }
         }
 
-        function deleteTask(taskId) {
-            if (confirm('Είστε σίγουροι ότι θέλετε να διαγράψετε αυτή την εργασία;')) {
-                tasks = tasks.filter(t => t.id !== taskId);
-                saveTasks();
-                loadTasks();
+        // Load tasks with real-time updates
+        function loadTasks() {
+            // Real-time listener for tasks
+            db.collection('tasks').orderBy('createdAt', 'desc').onSnapshot(snapshot => {
+                tasks = [];
+                snapshot.forEach(doc => {
+                    tasks.push({ id: doc.id, ...doc.data() });
+                });
+                
+                displayCurrentTasks();
+                displayHistoryTasks();
                 updateStats();
-                loadHistory();
-            }
+            });
         }
 
-        function loadTasks() {
+        function displayCurrentTasks() {
             const tasksList = document.getElementById('tasksList');
             
-            // Filter pending tasks for current user
+            // Filter tasks: show only tasks that involve current user
             const userTasks = tasks.filter(task => 
                 (task.assignedTo === currentUser || task.assignedBy === currentUser) && 
                 task.status === 'pending'
@@ -806,7 +970,7 @@
                                 ${task.priority === 'high' ? 'Υψηλή' : task.priority === 'medium' ? 'Μέτρια' : 'Χαμηλή'}
                             </span>
                         </div>
-                        <div>📅 ${new Date(task.createdAt).toLocaleDateString('el-GR')}</div>
+                        ${task.createdAt ? `<div>📅 ${task.createdAt.toDate().toLocaleDateString('el-GR')}</div>` : ''}
                     </div>
                     
                     ${task.description ? `<div class="task-description">${task.description}</div>` : ''}
@@ -815,30 +979,315 @@
                     
                     <div class="task-actions">
                         ${task.assignedTo === currentUser ? 
-                            `<button class="btn btn-small btn-success" onclick="completeTask(${task.id})">✅ Ολοκλήρωση</button>` : ''}
-                        ${task.assignedBy === currentUser ? 
-                            `<button class="btn btn-small btn-danger" onclick="deleteTask(${task.id})">🗑️ Διαγραφή</button>` : ''}
+                            `<button class="btn btn-small btn-success" onclick="completeTask('${task.id}')">✅ Ολοκλήρωση</button>` : ''}
+                        ${task.assignedBy === currentUser || isAdmin ? 
+                            `<button class="btn btn-small btn-danger" onclick="deleteTask('${task.id}')">🗑️ Διαγραφή</button>` : ''}
                     </div>
                 </div>
             `).join('');
         }
 
+        function displayHistoryTasks() {
+            const historyList = document.getElementById('historyList');
+            
+            // Filter completed tasks for current user
+            const completedTasks = tasks.filter(task => 
+                (task.assignedTo === currentUser || task.assignedBy === currentUser) && 
+                task.status === 'completed'
+            ).slice(0, 20); // Show last 20 completed tasks
+
+            if (completedTasks.length === 0) {
+                historyList.innerHTML = '<div style="text-align: center; color: #666; padding: 40px;">Δεν υπάρχουν ολοκληρωμένες εργασίες.</div>';
+                return;
+            }
+
+            historyList.innerHTML = completedTasks.map(task => {
+                const completedDate = task.completedAt ? task.completedAt.toDate() : new Date();
+                const createdDate = task.createdAt ? task.createdAt.toDate() : new Date();
+                const completionTime = Math.round((completedDate - createdDate) / (1000 * 60 * 60 * 24));
+                const completionTimeText = completionTime === 0 ? 'Ίδια μέρα' : `${completionTime} μέρες`;
+                
+                return `
+                    <div class="task-item" style="border-color: #c3e6cb; background: #f8f9fa;">
+                        <div class="task-header">
+                            <div class="task-title">${task.title}</div>
+                            <div class="task-status status-completed">✅ Ολοκληρώθηκε</div>
+                        </div>
+                        
+                        <div class="task-meta">
+                            <div>🎯 <strong>Από:</strong> ${userNames[task.assignedBy]}</div>
+                            <div>👤 <strong>Σε:</strong> ${userNames[task.assignedTo]}</div>
+                            <div>⏰ <strong>Χρόνος:</strong> ${completionTimeText}</div>
+                            <div>📅 <strong>Ολοκληρώθηκε:</strong> ${completedDate.toLocaleDateString('el-GR')}</div>
+                        </div>
+                        
+                        ${task.description ? `<div class="task-description">${task.description}</div>` : ''}
+                        ${task.photo ? `<img src="${task.photo}" class="task-photo" alt="Φωτογραφία εργασίας">` : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+
         function updateStats() {
-            const total = tasks.length;
-            const pending = tasks.filter(t => t.status === 'pending').length;
-            const completed = tasks.filter(t => t.status === 'completed').length;
+            const userTasks = tasks.filter(task => 
+                task.assignedTo === currentUser || task.assignedBy === currentUser
+            );
+            
+            const total = userTasks.length;
+            const pending = userTasks.filter(t => t.status === 'pending').length;
+            const completed = userTasks.filter(t => t.status === 'completed').length;
 
             document.getElementById('totalTasks').textContent = total;
             document.getElementById('pendingTasks').textContent = pending;
             document.getElementById('completedTasks').textContent = completed;
         }
 
-        function saveTasks() {
-            localStorage.setItem('familyTasks', JSON.stringify(tasks));
+        // PIN Management
+        function openPinModal() {
+            document.getElementById('pinModal').style.display = 'block';
+            
+            if (isAdmin) {
+                loadAdminPinManagement();
+            } else {
+                loadUserPinManagement();
+            }
         }
 
+        function closePinModal() {
+            document.getElementById('pinModal').style.display = 'none';
+        }
+
+        function loadUserPinManagement() {
+            document.getElementById('pinManagementContent').innerHTML = `
+                <div class="form-group">
+                    <label>Τρέχον PIN</label>
+                    <input type="password" id="currentPin" placeholder="Εισάγετε το τρέχον PIN">
+                </div>
+                <div class="form-group">
+                    <label>Νέο PIN</label>
+                    <input type="password" id="newPin" placeholder="Εισάγετε το νέο PIN" maxlength="6">
+                </div>
+                <div class="form-group">
+                    <label>Επιβεβαίωση νέου PIN</label>
+                    <input type="password" id="confirmPin" placeholder="Επιβεβαιώστε το νέο PIN" maxlength="6">
+                </div>
+                <div class="error" id="pinError"></div>
+                <button class="btn" onclick="changeUserPin()" style="width: 100%; margin-top: 10px;">🔑 Αλλαγή PIN</button>
+            `;
+        }
+
+        function loadAdminPinManagement() {
+            document.getElementById('pinManagementContent').innerHTML = `
+                <div class="form-group">
+                    <label>Επιλέξτε χρήστη</label>
+                    <select id="pinUser">
+                        <option value="dad">👨 Άρης</option>
+                        <option value="mom">👩 Κατερίνα</option>
+                        <option value="child">👧 Ελισάβετ</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Νέο PIN</label>
+                    <input type="password" id="adminNewPin" placeholder="Εισάγετε το νέο PIN" maxlength="6">
+                </div>
+                <div class="form-group">
+                    <label>Επιβεβαίωση PIN</label>
+                    <input type="password" id="adminConfirmPin" placeholder="Επιβεβαιώστε το νέο PIN" maxlength="6">
+                </div>
+                <div class="error" id="adminPinError"></div>
+                <button class="btn" onclick="changeUserPinAsAdmin()" style="width: 100%; margin-top: 10px;">⚙️ Αλλαγή PIN Χρήστη</button>
+                
+                <hr style="margin: 30px 0;">
+                
+                <div class="form-group">
+                    <label>Αλλαγή του δικού μου PIN</label>
+                    <input type="password" id="adminCurrentPin" placeholder="Τρέχον PIN">
+                </div>
+                <div class="form-group">
+                    <input type="password" id="adminMyNewPin" placeholder="Νέο PIN" maxlength="6">
+                </div>
+                <div class="form-group">
+                    <input type="password" id="adminMyConfirmPin" placeholder="Επιβεβαίωση νέου PIN" maxlength="6">
+                </div>
+                <button class="btn btn-warning" onclick="changeAdminPin()" style="width: 100%; margin-top: 10px;">🔑 Αλλαγή δικού μου PIN</button>
+            `;
+        }
+
+        async function changeUserPin() {
+            const currentPin = document.getElementById('currentPin').value;
+            const newPin = document.getElementById('newPin').value;
+            const confirmPin = document.getElementById('confirmPin').value;
+            
+            if (!currentPin || !newPin || !confirmPin) {
+                showError('pinError', 'Συμπληρώστε όλα τα πεδία');
+                return;
+            }
+            
+            if (newPin !== confirmPin) {
+                showError('pinError', 'Τα PIN δεν ταιριάζουν');
+                return;
+            }
+            
+            if (newPin.length < 4) {
+                showError('pinError', 'Το PIN πρέπει να έχει τουλάχιστον 4 ψηφία');
+                return;
+            }
+            
+            try {
+                // Verify current PIN
+                const userDoc = await db.collection('users').doc(currentUser).get();
+                const userData = userDoc.data();
+                
+                if (userData.pin !== currentPin) {
+                    showError('pinError', 'Λάθος τρέχον PIN');
+                    return;
+                }
+                
+                // Update PIN
+                await db.collection('users').doc(currentUser).update({
+                    pin: newPin,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                
+                closePinModal();
+                showNotification('🔑 Το PIN σας άλλαξε επιτυχώς!');
+                
+            } catch (error) {
+                console.error('Error changing PIN:', error);
+                showError('pinError', 'Σφάλμα αλλαγής PIN');
+            }
+        }
+
+        async function changeUserPinAsAdmin() {
+            const userId = document.getElementById('pinUser').value;
+            const newPin = document.getElementById('adminNewPin').value;
+            const confirmPin = document.getElementById('adminConfirmPin').value;
+            
+            if (!newPin || !confirmPin) {
+                showError('adminPinError', 'Συμπληρώστε όλα τα πεδία');
+                return;
+            }
+            
+            if (newPin !== confirmPin) {
+                showError('adminPinError', 'Τα PIN δεν ταιριάζουν');
+                return;
+            }
+            
+            if (newPin.length < 4) {
+                showError('adminPinError', 'Το PIN πρέπει να έχει τουλάχιστον 4 ψηφία');
+                return;
+            }
+            
+            try {
+                await db.collection('users').doc(userId).update({
+                    pin: newPin,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                
+                closePinModal();
+                showNotification(`🔑 Το PIN του/της ${userNames[userId]} άλλαξε επιτυχώς!`);
+                
+            } catch (error) {
+                console.error('Error changing user PIN:', error);
+                showError('adminPinError', 'Σφάλμα αλλαγής PIN');
+            }
+        }
+
+        async function changeAdminPin() {
+            const currentPin = document.getElementById('adminCurrentPin').value;
+            const newPin = document.getElementById('adminMyNewPin').value;
+            const confirmPin = document.getElementById('adminMyConfirmPin').value;
+            
+            if (!currentPin || !newPin || !confirmPin) {
+                showError('adminPinError', 'Συμπληρώστε όλα τα πεδία');
+                return;
+            }
+            
+            if (newPin !== confirmPin) {
+                showError('adminPinError', 'Τα PIN δεν ταιριάζουν');
+                return;
+            }
+            
+            if (newPin.length < 4) {
+                showError('adminPinError', 'Το PIN πρέπει να έχει τουλάχιστον 4 ψηφία');
+                return;
+            }
+            
+            try {
+                // Verify current PIN
+                const userDoc = await db.collection('users').doc(currentUser).get();
+                const userData = userDoc.data();
+                
+                if (userData.pin !== currentPin) {
+                    showError('adminPinError', 'Λάθος τρέχον PIN');
+                    return;
+                }
+                
+                // Update PIN
+                await db.collection('users').doc(currentUser).update({
+                    pin: newPin,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                
+                closePinModal();
+                showNotification('🔑 Το PIN σας άλλαξε επιτυχώς!');
+                
+            } catch (error) {
+                console.error('Error changing admin PIN:', error);
+                showError('adminPinError', 'Σφάλμα αλλαγής PIN');
+            }
+        }
+
+        // Admin user management
+        async function loadUserManagement() {
+            try {
+                const snapshot = await db.collection('users').get();
+                let usersHtml = '';
+                
+                snapshot.forEach(doc => {
+                    const user = doc.data();
+                    usersHtml += `
+                        <div class="task-item">
+                            <div class="task-header">
+                                <div class="task-title">${user.name}</div>
+                                <div class="task-status ${user.isAdmin ? 'status-completed' : 'status-pending'}">
+                                    ${user.isAdmin ? '👑 Admin' : '👤 Χρήστης'}
+                                </div>
+                            </div>
+                            <div class="task-meta">
+                                <div>🔑 <strong>PIN:</strong> ••••</div>
+                                <div>📅 <strong>Τελευταία ενημέρωση:</strong> ${user.updatedAt ? user.updatedAt.toDate().toLocaleDateString('el-GR') : 'Ποτέ'}</div>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                document.getElementById('userManagement').innerHTML = usersHtml;
+                
+            } catch (error) {
+                console.error('Error loading user management:', error);
+                document.getElementById('userManagement').innerHTML = '<div class="error">Σφάλμα φόρτωσης χρηστών</div>';
+            }
+        }
+
+        // Tab functions
+        function switchTab(tabName) {
+            // Update tab buttons
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelector(`[onclick="switchTab('${tabName}')"]`).classList.add('active');
+            
+            // Update tab content
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            document.getElementById(`${tabName}-tab`).classList.add('active');
+            
+            // Load content for specific tabs
+            if (tabName === 'admin' && isAdmin) {
+                loadUserManagement();
+            }
+        }
+
+        // Utility functions
         function showNotification(message) {
-            // Create notification element
             const notification = document.createElement('div');
             notification.className = 'notification-panel';
             notification.innerHTML = `
@@ -848,7 +1297,6 @@
 
             document.body.appendChild(notification);
 
-            // Remove after 5 seconds
             setTimeout(() => {
                 if (notification.parentElement) {
                     notification.remove();
@@ -856,234 +1304,19 @@
             }, 5000);
         }
 
-        // Push Notifications Functions
-        async function enableNotifications() {
-            if (!('Notification' in window)) {
-                alert('Ο browser σας δεν υποστηρίζει ειδοποιήσεις');
-                return;
-            }
-
-            if (!('serviceWorker' in navigator)) {
-                alert('Ο browser σας δεν υποστηρίζει Service Workers');
-                return;
-            }
-
-            try {
-                const permission = await Notification.requestPermission();
-                if (permission === 'granted') {
-                    notificationsEnabled = true;
-                    updateNotificationButton();
-                    showNotification('🔔 Οι ειδοποιήσεις ενεργοποιήθηκαν!');
-                } else {
-                    showNotification('❌ Οι ειδοποιήσεις απορρίφθηκαν');
-                }
-            } catch (error) {
-                console.error('Σφάλμα ενεργοποίησης ειδοποιήσεων:', error);
-            }
+        function showError(elementId, message) {
+            document.getElementById(elementId).textContent = message;
+            setTimeout(() => {
+                document.getElementById(elementId).textContent = '';
+            }, 5000);
         }
 
-        function updateNotificationButton() {
-            const btn = document.getElementById('enableNotifications');
-            if (notificationsEnabled) {
-                btn.textContent = '🔔 Ειδοποιήσεις Ενεργές';
-                btn.style.opacity = '0.7';
-                btn.disabled = true;
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('pinModal');
+            if (event.target === modal) {
+                closePinModal();
             }
-        }
-
-        function sendPushNotification(title, body) {
-            // For demo purposes, we'll show a browser notification
-            // In a real app, you'd send this to a push service
-            if (notificationsEnabled && Notification.permission === 'granted') {
-                new Notification(title, {
-                    body: body,
-                    icon: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiI+PGNpcmNsZSBmaWxsPSIjMmU3ZDgyIiBjeD0iMTYiIGN5PSIxNiIgcj0iMTYiLz48L3N2Zz4=',
-                    vibrate: [200, 100, 200],
-                    tag: 'family-task'
-                });
-            }
-        }
-
-        // PWA Install prompt
-        let deferredPrompt;
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            showInstallButton();
-        });
-
-        function showInstallButton() {
-            const installBtn = document.createElement('button');
-            installBtn.textContent = '📱 Εγκατάσταση App';
-            installBtn.className = 'btn';
-            installBtn.style.cssText = 'position: fixed; bottom: 20px; right: 20px; z-index: 1000;';
-            installBtn.onclick = () => {
-                if (deferredPrompt) {
-                    deferredPrompt.prompt();
-                    deferredPrompt.userChoice.then((choiceResult) => {
-                        if (choiceResult.outcome === 'accepted') {
-                            installBtn.remove();
-                        }
-                        deferredPrompt = null;
-                    });
-                }
-            };
-            document.body.appendChild(installBtn);
-        }
-
-        // Tab Functions
-        function switchTab(tabName) {
-            currentTab = tabName;
-            
-            // Update tab buttons
-            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
-            document.querySelector(`[onclick="switchTab('${tabName}')"]`).classList.add('active');
-            
-            // Update tab content
-            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-            document.getElementById(`${tabName}-tab`).classList.add('active');
-        }
-
-        // History Functions
-        function loadHistory() {
-            updateHistoryStats();
-            filterAndDisplayHistory();
-        }
-
-        function updateHistoryStats() {
-            const completedTasks = tasks.filter(t => t.status === 'completed');
-            
-            // Total completed
-            document.getElementById('historyTotalCompleted').textContent = completedTasks.length;
-            
-            // This week
-            const weekStart = new Date();
-            weekStart.setDate(weekStart.getDate() - weekStart.getDay());
-            weekStart.setHours(0, 0, 0, 0);
-            
-            const thisWeekTasks = completedTasks.filter(t => 
-                new Date(t.completedAt) >= weekStart
-            );
-            document.getElementById('historyThisWeek').textContent = thisWeekTasks.length;
-            
-            // This month
-            const monthStart = new Date();
-            monthStart.setDate(1);
-            monthStart.setHours(0, 0, 0, 0);
-            
-            const thisMonthTasks = completedTasks.filter(t => 
-                new Date(t.completedAt) >= monthStart
-            );
-            document.getElementById('historyThisMonth').textContent = thisMonthTasks.length;
-            
-            // Average per day (last 30 days)
-            const thirtyDaysAgo = new Date();
-            thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-            
-            const last30DaysTasks = completedTasks.filter(t => 
-                new Date(t.completedAt) >= thirtyDaysAgo
-            );
-            
-            const avgPerDay = (last30DaysTasks.length / 30).toFixed(1);
-            document.getElementById('historyAvgPerDay').textContent = avgPerDay;
-        }
-
-        function filterAndDisplayHistory() {
-            const personFilter = document.getElementById('historyPersonFilter').value;
-            const periodFilter = document.getElementById('historyPeriodFilter').value;
-            const sortFilter = document.getElementById('historySortFilter').value;
-            
-            let completedTasks = tasks.filter(t => t.status === 'completed');
-            
-            // Filter by person
-            if (personFilter !== 'all') {
-                completedTasks = completedTasks.filter(t => 
-                    t.assignedTo === personFilter || t.assignedBy === personFilter
-                );
-            }
-            
-            // Filter by period
-            if (periodFilter !== 'all') {
-                const now = new Date();
-                let startDate;
-                
-                switch (periodFilter) {
-                    case 'today':
-                        startDate = new Date();
-                        startDate.setHours(0, 0, 0, 0);
-                        break;
-                    case 'week':
-                        startDate = new Date();
-                        startDate.setDate(startDate.getDate() - startDate.getDay());
-                        startDate.setHours(0, 0, 0, 0);
-                        break;
-                    case 'month':
-                        startDate = new Date();
-                        startDate.setDate(1);
-                        startDate.setHours(0, 0, 0, 0);
-                        break;
-                }
-                
-                completedTasks = completedTasks.filter(t => 
-                    new Date(t.completedAt) >= startDate
-                );
-            }
-            
-            // Sort tasks
-            switch (sortFilter) {
-                case 'newest':
-                    completedTasks.sort((a, b) => new Date(b.completedAt) - new Date(a.completedAt));
-                    break;
-                case 'oldest':
-                    completedTasks.sort((a, b) => new Date(a.completedAt) - new Date(b.completedAt));
-                    break;
-                case 'priority':
-                    const priorityOrder = { high: 3, medium: 2, low: 1 };
-                    completedTasks.sort((a, b) => priorityOrder[b.priority] - priorityOrder[a.priority]);
-                    break;
-            }
-            
-            displayHistoryTasks(completedTasks);
-        }
-
-        function displayHistoryTasks(historyTasks) {
-            const historyList = document.getElementById('historyList');
-            
-            if (historyTasks.length === 0) {
-                historyList.innerHTML = '<div style="text-align: center; color: #666; padding: 40px;">Δεν βρέθηκαν ολοκληρωμένες εργασίες για τα επιλεγμένα φίλτρα.</div>';
-                return;
-            }
-            
-            historyList.innerHTML = historyTasks.map(task => {
-                const completedDate = new Date(task.completedAt);
-                const createdDate = new Date(task.createdAt);
-                const completionTime = Math.round((completedDate - createdDate) / (1000 * 60 * 60 * 24));
-                const completionTimeText = completionTime === 0 ? 'Ίδια μέρα' : `${completionTime} μέρες`;
-                
-                return `
-                    <div class="history-item">
-                        <div class="task-header">
-                            <div class="task-title">${task.title}</div>
-                            <div class="completion-time">⏰ ${completionTimeText}</div>
-                        </div>
-                        
-                        <div class="task-meta">
-                            <div>🎯 <strong>Από:</strong> ${userNames[task.assignedBy]}</div>
-                            <div>👤 <strong>Σε:</strong> ${userNames[task.assignedTo]}</div>
-                            <div>⭐ <strong>Προτεραιότητα:</strong> 
-                                <span style="color: ${priorityColors[task.priority]}">
-                                    ${task.priority === 'high' ? 'Υψηλή' : task.priority === 'medium' ? 'Μέτρια' : 'Χαμηλή'}
-                                </span>
-                            </div>
-                            <div>📅 <strong>Ολοκληρώθηκε:</strong> ${completedDate.toLocaleDateString('el-GR')} στις ${completedDate.toLocaleTimeString('el-GR', { hour: '2-digit', minute: '2-digit' })}</div>
-                        </div>
-                        
-                        ${task.description ? `<div class="task-description">${task.description}</div>` : ''}
-                        
-                        ${task.photo ? `<img src="${task.photo}" class="task-photo" alt="Φωτογραφία εργασίας">` : ''}
-                    </div>
-                `;
-            }).join('');
         }
     </script>
 </body>
