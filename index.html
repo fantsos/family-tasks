@@ -6,9 +6,14 @@
     <title>Οικογενειακές Εργασίες</title>
     <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIk9pa29nZW5laWFrw6VzIEVyZ2Fzw61htJUiLAogICJzaG9ydF9uYW1lIjogIkVyZ2Fzw61htJUiLAogICJzdGFydF91cmwiOiAiLyIsCiAgImRpc3BsYXkiOiAic3RhbmRhbG9uZSIsCiAgImJhY2tncm91bmRfY29sb3IiOiAiIzJlN2Q4MiIsCiAgInRoZW1lX2NvbG9yIjogIiMyZTdkODIiLAogICJpY29ucyI6IFsKICAgIHsKICAgICAgInNyYyI6ICJkYXRhOmltYWdlL3N2Zyt4bWw7YmFzZTY0LEwzTjJaeUI0Yld4dWN6MGlhSFIwY0RvdkwzZDNkeTV6TXk1dmNtY3ZNakF3TUM5emRtY2lJSGRwWkhSb1BTSXpNaUlnYUdWcFoyaDBQU0l6TWlJK1BHeGphU0JtYVd4c1BTSXlNa1V5T0RFaVBqeHdZWFJvSUdRZ1RTSTVMall4UZNFE1USTRXbTA0TGpSak1TNDRJekF1TlNBekxTNHdNVFVnTXk0ek5EMHhMalV6VERreUxqVXpJRFl1TnpoRE9USXVNVFVnTlM0ME1DQTVNUzQxTXlBMUxqUXdJRGt3TGpVNElEWXVNemhNTWpJdU16a2dORGd1TVROak1TNDRMUzR3TFRWZ016TTBJREF1TWpVaU1UTXVNVGtnTVRNdU1Ua2lQand2Y0dGMGFEND0iLAogICAgICAic2l6ZXMiOiAiMzJ4MzIiLAogICAgICAidHlwZSI6ICJpbWFnZS9zdmcreG1sIgogICAgfQogIF0KfQ==">
     <meta name="theme-color" content="#2e7d82">
+
+    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <!-- Messaging για Web Push -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging-compat.js"></script>
+
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
@@ -240,6 +245,11 @@
         const db = firebase.firestore();
         const auth = firebase.auth();
 
+        // Messaging refs
+        let messaging = null;
+        let fcmServiceWorkerRegistration = null;
+        const PUBLIC_VAPID_KEY = 'H4AYSYSPnYxk80jpgft9MGCfaug-cm9tOgPVAjzujXg'; // <-- Το PUBLIC VAPID KEY σου
+
         let currentUser = null, currentUserId = null, isAdmin = false, tasks = [], users = {}, notificationsEnabled = false, taskFormVisible = false;
         const userNames = { 'dad': '👨 Άρης', 'mom': '👩 Κατερίνα', 'child': '👧 Ελισάβετ' };
         const priorityColors = { 'low': '#28a745', 'medium': '#ffc107', 'high': '#dc3545' };
@@ -254,14 +264,11 @@
         function checkStoredLogin() {
             const storedUser = localStorage.getItem('familyTasksUser');
             const storedLoginTime = localStorage.getItem('familyTasksLoginTime');
-            
             if (storedUser && storedLoginTime) {
                 const daysSinceLogin = (new Date() - new Date(storedLoginTime)) / (1000 * 60 * 60 * 24);
-                
                 if (daysSinceLogin < 30) {
                     currentUser = storedUser;
                     currentUserId = storedUser;
-                    
                     db.collection('users').doc(storedUser).get().then(doc => {
                         if (doc.exists) {
                             isAdmin = doc.data().isAdmin || false;
@@ -274,7 +281,6 @@
                     return;
                 }
             }
-            
             document.getElementById('loginScreen').style.display = 'block';
         }
 
@@ -339,15 +345,9 @@
         }
 
         async function login() {
-            if (!currentUserId) {
-                showError('loginError', 'Παρακαλώ επιλέξτε χρήστη');
-                return;
-            }
+            if (!currentUserId) { showError('loginError', 'Παρακαλώ επιλέξτε χρήστη'); return; }
             const pin = document.getElementById('pinInput').value;
-            if (!pin) {
-                showError('loginError', 'Παρακαλώ εισάγετε PIN');
-                return;
-            }
+            if (!pin) { showError('loginError', 'Παρακαλώ εισάγετε PIN'); return; }
             try {
                 const userDoc = await db.collection('users').doc(currentUserId).get();
                 if (userDoc.exists) {
@@ -382,17 +382,13 @@
                 document.getElementById('adminBadge').style.display = 'inline-block';
                 document.getElementById('adminTab').style.display = 'block';
             }
-            listenForNotifications();
+            listenForNotifications(); // in-app panel
         }
 
-        function showAdminFeatures() {
-            loadUserManagement();
-        }
+        function showAdminFeatures() { loadUserManagement(); }
 
         function logout() {
-            currentUser = null;
-            currentUserId = null;
-            isAdmin = false;
+            currentUser = null; currentUserId = null; isAdmin = false;
             localStorage.removeItem('familyTasksUser');
             localStorage.removeItem('familyTasksLoginTime');
             auth.signOut();
@@ -541,7 +537,6 @@
                 const createdDate = task.createdAt ? task.createdAt.toDate() : new Date();
                 const completionTime = Math.round((completedDate - createdDate) / (1000 * 60 * 60 * 24));
                 const completionTimeText = completionTime === 0 ? 'Ίδια μέρα' : `${completionTime} μέρες`;
-                
                 return `
                     <div class="task-item" style="border-color: #c3e6cb; background: #f8f9fa;">
                         <div class="task-header">
@@ -571,39 +566,29 @@
             document.getElementById('completedTasks').textContent = completed;
         }
 
-        function setupNotifications() {
-            if ('Notification' in window && 'serviceWorker' in navigator) {
-                if (Notification.permission === 'granted') {
-                    notificationsEnabled = true;
-                } else if (Notification.permission !== 'denied') {
-                    document.getElementById('enableNotificationsBtn').style.display = 'inline-block';
-                }
-                registerServiceWorker();
+        // ---------- FCM Web Push ----------
+        async function setupNotifications() {
+            if (!('Notification' in window) || !('serviceWorker' in navigator)) { return; }
+            try {
+                // Ο SW πρέπει να είναι στη ρίζα του domain στο Netlify
+                fcmServiceWorkerRegistration = await navigator.serviceWorker.register('/firebase-messaging-sw.js');
+                console.log('FCM SW registered');
+            } catch (err) {
+                console.error('FCM SW registration failed', err);
+                return;
             }
-        }
 
-        function registerServiceWorker() {
-            if ('serviceWorker' in navigator) {
-                const swCode = `
-                    self.addEventListener('install', event => { console.log('Service Worker installed'); self.skipWaiting(); });
-                    self.addEventListener('activate', event => { console.log('Service Worker activated'); event.waitUntil(self.clients.claim()); });
-                    self.addEventListener('push', event => {
-                        if (!event.data) return;
-                        const data = event.data.json();
-                        const options = { body: data.body, icon: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiI+PGNpcmNsZSBmaWxsPSIjMmU3ZDgyIiBjeD0iMTYiIGN5PSIxNiIgcj0iMTYiLz48L3N2Zz4=', badge: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiI+PGNpcmNsZSBmaWxsPSIjMmU3ZDgyIiBjeD0iMTYiIGN5PSIxNiIgcj0iMTYiLz48L3N2Zz4=', vibrate: [200, 100, 200], tag: 'family-task', requireInteraction: true };
-                        event.waitUntil(self.registration.showNotification(data.title, options));
-                    });
-                    self.addEventListener('notificationclick', event => {
-                        event.notification.close();
-                        event.waitUntil(self.clients.openWindow('/'));
-                    });
-                `;
-                const blob = new Blob([swCode], { type: 'application/javascript' });
-                const swUrl = URL.createObjectURL(blob);
-                navigator.serviceWorker.register(swUrl).then(registration => {
-                    console.log('SW registered');
-                    window.swRegistration = registration;
-                }).catch(error => console.log('SW registration failed', error));
+            messaging = firebase.messaging();
+
+            if (Notification.permission === 'granted') {
+                notificationsEnabled = true;
+                await getAndSaveFcmToken();
+                messaging.onMessage((payload) => {
+                    const n = payload.notification || {};
+                    showNotification(`${n.title || 'Ειδοποίηση'}\n${n.body || ''}`);
+                });
+            } else if (Notification.permission !== 'denied') {
+                document.getElementById('enableNotificationsBtn').style.display = 'inline-block';
             }
         }
 
@@ -614,6 +599,11 @@
                     notificationsEnabled = true;
                     document.getElementById('enableNotificationsBtn').style.display = 'none';
                     showNotification('🔔 Οι ειδοποιήσεις ενεργοποιήθηκαν!');
+                    await getAndSaveFcmToken();
+                    messaging.onMessage((payload) => {
+                        const n = payload.notification || {};
+                        showNotification(`${n.title || 'Ειδοποίηση'}\n${n.body || ''}`);
+                    });
                 } else {
                     showNotification('❌ Οι ειδοποιήσεις απορρίφθηκαν');
                 }
@@ -622,6 +612,23 @@
                 showNotification('❌ Σφάλμα ενεργοποίησης ειδοποιήσεων');
             }
         }
+
+        async function getAndSaveFcmToken() {
+            try {
+                const token = await messaging.getToken({
+                    vapidKey: PUBLIC_VAPID_KEY,
+                    serviceWorkerRegistration: fcmServiceWorkerRegistration
+                });
+                if (token && currentUser) {
+                    await db.collection('users').doc(currentUser).set({ fcmToken: token }, { merge: true });
+                    console.log('FCM token saved for', currentUser, token);
+                }
+            } catch (err) {
+                console.error('FCM getToken error:', err);
+                showNotification('❌ Αποτυχία λήψης FCM token');
+            }
+        }
+        // -----------------------------------
 
         function sendTaskNotification(targetUser, title, message) {
             db.collection('notifications').add({
@@ -636,14 +643,8 @@
                 snapshot.docChanges().forEach(change => {
                     if (change.type === 'added') {
                         const notification = change.doc.data();
-                        if (notificationsEnabled && Notification.permission === 'granted') {
-                            new Notification(notification.title, {
-                                body: notification.message,
-                                icon: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMiIgaGVpZ2h0PSIzMiI+PGNpcmNsZSBmaWxsPSIjMmU3ZDgyIiBjeD0iMTYiIGN5PSIxNiIgcj0iMTYiLz48L3N2Zz4=',
-                                vibrate: [200, 100, 200], tag: 'family-task'
-                            });
-                        }
-                        showNotification(`${notification.title}\\n${notification.message}`);
+                        // in-app panel
+                        showNotification(`${notification.title}\n${notification.message}`);
                         db.collection('notifications').doc(change.doc.id).update({ read: true });
                     }
                 });
@@ -654,7 +655,6 @@
             document.getElementById('pinModal').style.display = 'block';
             if (isAdmin) { loadAdminPinManagement(); } else { loadUserPinManagement(); }
         }
-
         function closePinModal() { document.getElementById('pinModal').style.display = 'none'; }
 
         function loadUserPinManagement() {
@@ -791,9 +791,9 @@
             if (event.target === modal) { closePinModal(); }
         }
 
+        // Προαιρετικό A2HS κουμπί
         let deferredPrompt;
         window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; showInstallButton(); });
-
         function showInstallButton() {
             const installBtn = document.createElement('button');
             installBtn.textContent = '📱 Εγκατάσταση App';
