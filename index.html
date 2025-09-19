@@ -614,19 +614,23 @@
         }
 
         async function getAndSaveFcmToken() {
-            try {
-                const token = await messaging.getToken({
-                    vapidKey: PUBLIC_VAPID_KEY,
-                    serviceWorkerRegistration: fcmServiceWorkerRegistration
-                });
-                if (token && currentUser) {
-                    await db.collection('users').doc(currentUser).set({ fcmToken: token }, { merge: true });
-                    console.log('FCM token saved for', currentUser, token);
-                }
-            } catch (err) {
-                console.error('FCM getToken error:', err);
-                showNotification('❌ Αποτυχία λήψης FCM token');
+          try {
+            const token = await messaging.getToken({
+              vapidKey: 'H4AYSYSPnYxk80jpgft9MGCfaug-cm9tOgPVAjzujXg',
+              serviceWorkerRegistration: fcmServiceWorkerRegistration
+            });
+            console.log('FCM token =>', token);
+            if (token && currentUser) {
+              await db.collection('users').doc(currentUser).set({ fcmToken: token }, { merge: true });
+              showNotification('✅ Token αποθηκεύτηκε.');
+            } else {
+              showNotification('ℹ️ Δεν ελήφθη token (ίσως δεν έχει δοθεί άδεια).');
             }
+          } catch (err) {
+            console.error('FCM getToken error:', err);
+            // Δείξε το ακριβές μήνυμα για να ξέρουμε τι φταίει
+            showNotification('❌ FCM token error: ' + (err.code || '') + ' ' + (err.message || err));
+          }
         }
         // -----------------------------------
 
