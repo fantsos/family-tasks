@@ -1,5 +1,4 @@
 // /firebase-messaging-sw.js
-
 importScripts('https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js');
 importScripts('https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging-compat.js');
 
@@ -19,10 +18,10 @@ messaging.onBackgroundMessage((payload) => {
   const title = n.title || 'Ειδοποίηση';
   const options = {
     body: n.body || '',
-    icon: '/favicon.ico',        // άλλαξέ το αν θέλεις
+    icon: '/favicon.ico',
     vibrate: [200, 100, 200],
     tag: 'family-task',
-    data: { url: '/' }          // άνοιγμα της αρχικής σε κλικ
+    data: { url: '/' }
   };
   self.registration.showNotification(title, options);
 });
